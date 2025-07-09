@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>ระบบขอเข้าพักชั่วคราว - วชิราวุธวิทยาลัย</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .loading { display: none; }
+    .loading.show { display: flex; }
+    .success-message { background-color: #dcfce7; color: #15803d; }
+    .error-message { background-color: #fee2e2; color: #b91c1c; }
+    .info-message { background-color: #e0f2fe; color: #0369a1; }
+  </style>
+</head>
+<body class="bg-gray-100 text-sm">
+<!-- Main Content -->
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- Alert Messages -->
+    <div id="alertContainer" class="mb-6"></div>
+
+
+
+    <!-- Form -->
+    <div class="bg-white rounded-lg shadow-lg p-8">
+        <form id="accommodationForm" class="space-y-6">
+            <!-- ข้อมูลผู้ขอ -->
+            <div class="border-b pb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    👤 ข้อมูลผู้ขอ
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">ชื่อ-นามสกุล *</label>
+                        <input type="text" name="requesterName" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="กรอกชื่อ-นามสกุล">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">หมวด/แผนก *</label>
+                        <input type="text" name="department" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="เช่น หมวดวิชาคณิตศาสตร์">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">ฝ่าย/สายงาน *</label>
+                        <input type="text" name="division" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="เช่น ฝ่ายวิชาการ">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">เบอร์โทรศัพท์ *</label>
+                        <input type="tel" name="phone" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="08X-XXX-XXXX">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">อีเมล *</label>
+                        <input type="email" name="email" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="example@vajiravudh.ac.th">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ข้อมูลที่พัก -->
+            <div class="border-b pb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    🏠 ข้อมูลที่พัก
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">ประเภทที่พัก *</label>
+                        <select name="accommodationType" required 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">เลือกประเภทที่พัก</option>
+                            <option value="หอพักครู">หอพักครู</option>
+                            <option value="ที่พักพระรามหกนิเวศ">ที่พักพระรามหกนิเวศ</option>
+                            <option value="ที่พักพนักงาน">ที่พักพนักงาน</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">ชั้น/ตึก *</label>
+                        <select name="floor" required 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">เลือกชั้น/ตึก</option>
+                            <option value="ชั้น 1">ชั้น 1</option>
+                            <option value="ชั้น 2">ชั้น 2</option>
+                            <option value="ชั้น 3">ชั้น 3</option>
+                            <option value="ชั้น 4">ชั้น 4</option>
+                            <option value="ตึก A">ตึก A</option>
+                            <option value="ตึก B">ตึก B</option>
+                            <option value="ตึก C">ตึก C</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">หมายเลขห้อง *</label>
+                        <input type="text" name="roomNumber" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="เช่น 101, A-205">
+                    </div>
+                </div>
+                
+
+            </div>
+
+            <!-- ระยะเวลาเข้าพัก -->
+            <div class="border-b pb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    📅 ระยะเวลาเข้าพัก
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">วันที่เข้าพัก *</label>
+                        <input type="date" name="checkInDate" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">วันที่ออก *</label>
+                        <input type="date" name="checkOutDate" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <div id="durationInfo" class="mt-2 text-sm text-gray-600"></div>
+            </div>
+
+            <!-- ข้อมูลผู้เข้าพัก -->
+            <div class="border-b pb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    👥 ข้อมูลผู้เข้าพัก
+                </h2>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">จำนวนผู้เข้าพัก *</label>
+                    <input type="number" id="guestCount" name="guestCount" min="1" max="10" value="1" required 
+                           class="w-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div id="guestDetails" class="space-y-3">
+                    <!-- Guest details will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- เหตุผล -->
+            <div class="border-b pb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    📝 เหตุผลในการขอเข้าพัก
+                </h2>
+                <textarea name="reason" required rows="4" 
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="กรุณาระบุเหตุผลในการขอเข้าพัก เช่น เข้าร่วมประชุม, อบรม, งานพิเศษ"></textarea>
+            </div>
+
+            <!-- ปุ่มส่งคำขอ -->
+            <div class="text-center">
+                <button type="submit" id="submitBtn" 
+                        class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                    📤 ส่งคำขอเข้าพัก
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg text-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <p class="text-gray-700">กำลังประมวลผล...</p>
+    </div>
+</div>
+
+<script>
+    // Configuration
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyL1Sc-I5YyypsUmr7c-LKqb0kfyP9il1LncmW6aDOVojDgrdWuoeuZMDJ0d6RxFBh3Sw/exec';
+    
+    // Web App URL for approval links (same as SCRIPT_URL)
+    const WEB_APP_URL = SCRIPT_URL;
+    
+    // Approvers configuration
+    const APPROVERS = {
+        first: {
+            name: 'นายวงศกร สมัยเอี่ยม',
+            email: 'wongsakorn.s@vajiravudh.ac.th'
+        },
+        second: {
+            name: 'ดร.พิพัฒน์ พรพรรนุกูล',
+            email: 'davilcompany@gmail.com'
+        }
+    };
+
+    // DOM Elements
+    const form = document.getElementById('accommodationForm');
+    const guestCountInput = document.getElementById('guestCount');
+    const guestDetailsDiv = document.getElementById('guestDetails');
+    const checkInInput = document.querySelector('input[name="checkInDate"]');
+    const checkOutInput = document.querySelector('input[name="checkOutDate"]');
+    const durationInfo = document.getElementById('durationInfo');
+
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const alertContainer = document.getElementById('alertContainer');
+
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    checkInInput.min = today;
+    checkOutInput.min = today;
+
+    // Initialize guest details
+    function updateGuestDetails() {
+        const count = parseInt(guestCountInput.value) || 1;
+        guestDetailsDiv.innerHTML = '';
+
+        for (let i = 0; i < count; i++) {
+            const guestDiv = document.createElement('div');
+            guestDiv.className = 'guest-row';
+            guestDiv.innerHTML = `
+                <h4 class="font-medium text-gray-800 mb-3">
+                    👥 ผู้เข้าพักคนที่ ${i + 1}
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อ-นามสกุล *</label>
+                        <input type="text" name="guest_${i}_name" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="กรอกชื่อ-นามสกุล">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ความเกี่ยวข้อง *</label>
+                        <select name="guest_${i}_relationship" required 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">เลือกความเกี่ยวข้อง</option>
+                            <option value="ผู้ขอ">ผู้ขอ</option>
+                            <option value="คู่สมรส">คู่สมรส</option>
+                            <option value="บุตร">บุตร</option>
+                            <option value="บิดา">บิดา</option>
+                            <option value="มารดา">มารดา</option>
+                            <option value="พี่น้อง">พี่น้อง</option>
+                            <option value="เพื่อนร่วมงาน">เพื่อนร่วมงาน</option>
+                            <option value="อื่นๆ">อื่นๆ</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+            guestDetailsDiv.appendChild(guestDiv);
+        }
+    }
+
+    // Calculate duration
+    function updateDuration() {
+        const checkIn = new Date(checkInInput.value);
+        const checkOut = new Date(checkOutInput.value);
+        const submitBtn = document.getElementById('submitBtn');
+        
+        if (checkIn && checkOut && checkOut > checkIn) {
+            const diffTime = Math.abs(checkOut - checkIn);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            durationInfo.innerHTML = `<span class="text-blue-600 font-medium">ระยะเวลา: ${diffDays} วัน</span>`;
+            
+            if (diffDays > 5) {
+                durationInfo.innerHTML += `<span class="text-red-600 ml-2">❌ ไม่สามารถขอเข้าพักเกิน 5 วันได้</span>`;
+                submitBtn.disabled = true;
+                submitBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                submitBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+                submitBtn.innerHTML = '🚫 ไม่สามารถส่งคำขอได้ (เกิน 5 วัน)';
+            } else {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                submitBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                submitBtn.innerHTML = '📤 ส่งคำขอเข้าพัก';
+            }
+        } else {
+            durationInfo.innerHTML = '';
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
+            submitBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+            submitBtn.innerHTML = '📤 ส่งคำขอเข้าพัก';
+        }
+    }
+
+    // Show alert message
+    function showAlert(message, type = 'info') {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `p-4 rounded-lg mb-4 ${type}-message`;
+        alertDiv.innerHTML = `
+            <div class="flex items-center justify-between">
+                <span>${message}</span>
+                <button onclick="this.parentElement.parentElement.remove()" class="text-xl">&times;</button>
+            </div>
+        `;
+        alertContainer.appendChild(alertDiv);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (alertDiv.parentElement) {
+                alertDiv.remove();
+            }
+        }, 5000);
+    }
+
+    // Show loading
+    function showLoading() {
+        loadingOverlay.classList.add('show');
+    }
+
+    // Hide loading
+    function hideLoading() {
+        loadingOverlay.classList.remove('show');
+    }
+
+    // Send email notification
+    async function sendEmailNotification(requestData, requestId, type) {
+        try {
+            const emailData = new FormData();
+            emailData.append('action', 'sendEmail');
+            emailData.append('requestId', requestId);
+            emailData.append('emailType', type);
+            
+            // Add Web App URL for approval links
+            emailData.append('webAppUrl', WEB_APP_URL);
+            
+            // Add request details for email content (encode to prevent character issues)
+            emailData.append('requesterName', encodeURIComponent(requestData.requesterName));
+            emailData.append('requesterEmail', requestData.email);
+            emailData.append('department', encodeURIComponent(requestData.department));
+            emailData.append('division', encodeURIComponent(requestData.division));
+            emailData.append('phone', requestData.phone);
+            emailData.append('accommodationType', encodeURIComponent(requestData.accommodationType));
+            emailData.append('floor', encodeURIComponent(requestData.floor));
+            emailData.append('roomNumber', requestData.roomNumber);
+            emailData.append('checkInDate', requestData.checkInDate);
+            emailData.append('checkOutDate', requestData.checkOutDate);
+            emailData.append('guestCount', requestData.guestCount);
+            emailData.append('guests', encodeURIComponent(requestData.guests));
+            emailData.append('reason', encodeURIComponent(requestData.reason));
+            
+            // Add approver information based on email type (encode Thai names)
+            if (type === 'first_approver') {
+                emailData.append('approverName', encodeURIComponent(APPROVERS.first.name));
+                emailData.append('approverEmail', APPROVERS.first.email);
+                emailData.append('nextApproverName', encodeURIComponent(APPROVERS.second.name));
+                emailData.append('nextApproverEmail', APPROVERS.second.email);
+            } else if (type === 'second_approver') {
+                emailData.append('approverName', encodeURIComponent(APPROVERS.second.name));
+                emailData.append('approverEmail', APPROVERS.second.email);
+            } else if (type === 'rejection' || type === 'final_approval') {
+                emailData.append('firstApproverName', encodeURIComponent(APPROVERS.first.name));
+                emailData.append('firstApproverEmail', APPROVERS.first.email);
+                emailData.append('secondApproverName', encodeURIComponent(APPROVERS.second.name));
+                emailData.append('secondApproverEmail', APPROVERS.second.email);
+            }
+            
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: emailData
+            });
+            
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            console.error('Failed to send email notification:', error);
+            return { status: 'error', message: error.message };
+        }
+    }
+
+
+
+    // Submit form
+    async function submitForm(e) {
+        e.preventDefault();
+        
+        // Check if duration exceeds 5 days
+        const checkIn = new Date(checkInInput.value);
+        const checkOut = new Date(checkOutInput.value);
+        if (checkIn && checkOut) {
+            const diffTime = Math.abs(checkOut - checkIn);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (diffDays > 5) {
+                showAlert('ไม่สามารถส่งคำขอเข้าพักได้ เนื่องจากระยะเวลาเกิน 5 วัน', 'error');
+                return;
+            }
+        }
+        
+        showLoading();
+        
+        try {
+            const formData = new FormData();
+            formData.append('action', 'submitRequest');
+            
+            // Basic form data
+            const formElements = form.elements;
+            for (let element of formElements) {
+                if (element.name && element.value && !element.name.startsWith('guest_')) {
+                    formData.append(element.name, element.value);
+                }
+            }
+
+            // Guest data
+            const guestCount = parseInt(guestCountInput.value);
+            const guests = [];
+            
+            for (let i = 0; i < guestCount; i++) {
+                const name = document.querySelector(`input[name="guest_${i}_name"]`).value;
+                const relationship = document.querySelector(`select[name="guest_${i}_relationship"]`).value;
+                
+                if (!name || !relationship) {
+                    throw new Error(`กรุณากรอกข้อมูลผู้เข้าพักคนที่ ${i + 1} ให้ครบถ้วน`);
+                }
+                
+                guests.push({
+                    name: name,
+                    relationship: relationship,
+                    relationshipType: i === 0 ? relationship : undefined
+                });
+            }
+            
+            formData.append('guestCount', guestCount);
+            formData.append('guests', JSON.stringify(guests));
+            formData.append('version', '3.1');
+
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                // Prepare request data for email
+                const requestData = {
+                    requesterName: document.querySelector('input[name="requesterName"]').value,
+                    email: document.querySelector('input[name="email"]').value,
+                    department: document.querySelector('input[name="department"]').value,
+                    division: document.querySelector('input[name="division"]').value,
+                    phone: document.querySelector('input[name="phone"]').value,
+                    accommodationType: document.querySelector('select[name="accommodationType"]').value,
+                    floor: document.querySelector('select[name="floor"]').value,
+                    roomNumber: document.querySelector('input[name="roomNumber"]').value,
+                    checkInDate: document.querySelector('input[name="checkInDate"]').value,
+                    checkOutDate: document.querySelector('input[name="checkOutDate"]').value,
+                    guestCount: guestCount,
+                    guests: JSON.stringify(guests),
+                    reason: document.querySelector('textarea[name="reason"]').value
+                };
+                
+                // Send email notification to first approver
+                const emailResult = await sendEmailNotification(requestData, result.requestId, 'first_approver');
+                
+                let emailStatus = '';
+                if (emailResult && emailResult.status === 'success') {
+                    emailStatus = `📧 ส่งอีเมลแจ้งเตือนไปยัง: ${APPROVERS.first.name} (${APPROVERS.first.email}) สำเร็จ<br>`;
+                } else {
+                    emailStatus = '⚠️ ส่งอีเมลแจ้งเตือนไม่สำเร็จ กรุณาติดต่อผู้ดูแลระบบ<br>';
+                }
+                
+                showAlert(`
+                    🎉 ส่งคำขอสำเร็จ!<br>
+                    เลขที่คำขอ: <strong>${result.requestId}</strong><br>
+                    สถานะ: ${result.approvalStatus}<br>
+                    ${emailStatus}
+                    <br>📋 <strong>ขั้นตอนการอนุมัติ:</strong><br>
+                    1️⃣ รอการอนุมัติจาก: ${APPROVERS.first.name}<br>
+                    2️⃣ หากอนุมัติ จะส่งต่อไปยัง: ${APPROVERS.second.name}<br>
+                    <br>💡 <strong>หมายเหตุ:</strong> ผู้อนุมัติสามารถคลิกปุ่มในอีเมลเพื่ออนุมัติหรือไม่อนุมัติได้โดยตรง
+                `, 'success');
+                
+                // Reset form
+                form.reset();
+                updateGuestDetails();
+                durationInfo.innerHTML = '';
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                throw new Error(result.message);
+            }
+        } catch (error) {
+            showAlert('เกิดข้อผิดพลาด: ' + error.message, 'error');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    // Event listeners
+    guestCountInput.addEventListener('change', updateGuestDetails);
+    checkInInput.addEventListener('change', () => {
+        checkOutInput.min = checkInInput.value;
+        updateDuration();
+    });
+    checkOutInput.addEventListener('change', updateDuration);
+
+    form.addEventListener('submit', submitForm);
+
+    // Initialize
+    updateGuestDetails();
+</script>
+</body>
+</html>
